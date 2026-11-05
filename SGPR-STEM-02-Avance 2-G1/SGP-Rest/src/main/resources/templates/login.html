@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="~{general/fragmentos :: head}"></head>
+
+    <body class="sgp-login">
+        <section class="login-panel">
+            <div>
+                <a class="login-logo" th:href="@{/login}">
+                    [[#{aplicacion.titulo}]]
+                    <small>[[#{aplicacion.subtitulo}]]</small>
+                </a>
+                <h1>[[#{login.lema}]]</h1>
+            </div>
+            <small>[[#{plantilla.derechos}]]</small>
+        </section>
+
+        <main class="login-main">
+            <div class="login-box">
+                <h2>[[#{login.titulo}]]</h2>
+                <p>[[#{login.subtitulo}]]</p>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="card p-3 h-100">
+                            <h5>
+                                <i class="fa-solid fa-user-shield"></i>
+                                [[#{login.admin}]]
+                            </h5>
+                            <p class="text-muted">[[#{login.admin.texto}]]</p>
+                            <form th:action="@{/login}" method="post">
+                                <input type="hidden" name="rol" value="ADMIN"/>
+                                <button type="submit" class="btn btn-success w-100">
+                                    [[#{login.admin.entrar}]]
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card p-3 h-100">
+                            <h5>
+                                <i class="fa-solid fa-user"></i>
+                                [[#{login.empleado}]]
+                            </h5>
+                            <p class="text-muted">[[#{login.empleado.texto}]]</p>
+                            <form th:action="@{/login}" method="post">
+                                <input type="hidden" name="rol" value="EMPLEADO"/>
+                                <select name="idEmpleado" class="form-select mb-2" required>
+                                    <option th:each="e : ${empleados}"
+                                            th:value="${e.id}"
+                                            th:text="${e.nombre}"></option>
+                                </select>
+                                <button type="submit" class="btn btn-success w-100">
+                                    [[#{login.empleado.entrar}]]
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

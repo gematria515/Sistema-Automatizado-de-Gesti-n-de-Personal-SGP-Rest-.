@@ -1,0 +1,212 @@
+<!-- 1 Fragmento con formulario unificado para agregar y modificar empleado -->
+<section th:fragment="formulario">
+    <h2>[[#{empleado.listado}]]</h2>
+    <p class="sgp-subtitle">[[#{empleado.subtitulo}]]</p>
+
+    <div class="row py-4 mb-2 bg-light">
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-3">
+            <button type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#empleadoModal"
+                    data-modo="agregar"
+                    th:data-titulo="#{empleado.agregar}">
+                <i class="fa-solid fa-plus"></i>
+                [[#{empleado.agregar}]]
+            </button>
+        </div>
+    </div>
+
+    <div class="modal fade" id="empleadoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="empleadoForm"
+                      method="post"
+                      th:action="@{/empleado/guardar}">
+
+                    <div class="modal-header" id="empleadoModalHeader">
+                        <h5 class="modal-title" id="empleadoModalTitulo"></h5>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="[[#{accion.cerrar}]]"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <input type="hidden"
+                               id="empleadoId"
+                               name="id"/>
+
+                        <div class="mb-3">
+                            <label for="empleadoNombre">
+                                [[#{empleado.nombre}]]
+                            </label>
+                            <input type="text"
+                                   id="empleadoNombre"
+                                   name="nombre"
+                                   class="form-control"
+                                   required/>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="empleadoCorreo">
+                                [[#{empleado.correo}]]
+                            </label>
+                            <input type="email"
+                                   id="empleadoCorreo"
+                                   name="correo"
+                                   class="form-control"
+                                   required/>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="empleadoPuesto">
+                                [[#{empleado.puesto}]]
+                            </label>
+                            <input type="text"
+                                   id="empleadoPuesto"
+                                   name="puesto"
+                                   class="form-control"
+                                   required/>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="empleadoArea">
+                                [[#{empleado.area}]]
+                            </label>
+                            <input type="text"
+                                   id="empleadoArea"
+                                   name="area"
+                                   class="form-control"
+                                   required/>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="empleadoTarifaHora">
+                                [[#{empleado.tarifaHora}]]
+                            </label>
+                            <input type="number"
+                                   id="empleadoTarifaHora"
+                                   name="tarifaHora"
+                                   class="form-control" step="0.01" min="0"
+                                   required/>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="empleadoActivo">
+                                [[#{empleado.activo}]]
+                            </label>
+                            <input type="checkbox"
+                                   id="empleadoActivo"
+                                   name="activo"
+                                   class="form-check-input"/>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            <i class="fa-solid fa-xmark"></i>
+                            [[#{accion.cerrar}]]
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            [[#{accion.guardar}]]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Fragmento 2 para el listado de empleados -->
+<section th:fragment="listado" class="p-3">
+    <div class="row p-3">
+        <div class="col-md-9">
+            <div class="card p-2">
+                <div class="card-header">
+                    <h4>[[#{empleado.listado}]]</h4>
+                </div>
+
+                <div class="card-body">
+                    <div th:if="${empleados != null and !empleados.empty}">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>[[#{empleado.nombre}]]</th>
+                                    <th>[[#{empleado.correo}]]</th>
+                                    <th>[[#{empleado.puesto}]]</th>
+                                    <th>[[#{empleado.area}]]</th>
+                                    <th>[[#{empleado.tarifaHora}]]</th>
+                                    <th>[[#{empleado.activo}]]</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="x : ${empleados}">
+                                    <td>[[${x.id}]]</td>
+                                    <td>[[${x.nombre}]]</td>
+                                    <td>[[${x.correo}]]</td>
+                                    <td>[[${x.puesto}]]</td>
+                                    <td>[[${x.area}]]</td>
+                                    <td>[[${x.tarifaHora}]]</td>
+                                    <td th:text="${x.activo} ? #{estado.activo} : #{estado.inactivo}"></td>
+                                    <td>
+                                        <button type="button"
+                                                class="btn btn-danger"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirmModal"
+                                                th:data-bs-id="${x.id}"
+                                                th:data-bs-descripcion="${x.nombre}">
+                                            <i class="fa-solid fa-trash"></i>
+                                            [[#{accion.eliminar}]]
+                                        </button>
+
+                                        <button type="button"
+                                                class="btn btn-warning"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#empleadoModal"
+                                                data-modo="editar"
+                                                th:data-titulo="#{accion.actualizar}"
+                                                th:data-id="${x.id}"
+                                                th:data-nombre="${x.nombre}"
+                                                th:data-correo="${x.correo}"
+                                                th:data-puesto="${x.puesto}"
+                                                th:data-area="${x.area}"
+                                                th:data-tarifahora="${x.tarifaHora}"
+                                                th:data-activo="${x.activo}">
+                                            <i class="fas fa-pencil-alt"></i>
+                                            [[#{accion.actualizar}]]
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-center p-2"
+                         th:if="${empleados == null or empleados.empty}">
+                        <span>[[#{lista.vacia}]]</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center bg-success text-white mb-3">
+                <div class="card-body">
+                    <h3>[[#{empleado.total}]]</h3>
+                    <h4 class="fs-2">
+                        <i class="fas fa-users"></i>
+                        [[${totalEmpleados}]]
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

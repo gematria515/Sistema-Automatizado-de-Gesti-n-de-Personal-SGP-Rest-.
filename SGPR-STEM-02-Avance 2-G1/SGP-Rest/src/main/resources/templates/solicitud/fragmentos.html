@@ -1,0 +1,176 @@
+<!-- 1 Fragmento con el formulario para registrar una solicitud -->
+<section th:fragment="formulario">
+    <h2>[[#{solicitud.listado}]]</h2>
+    <p class="sgp-subtitle">[[#{solicitud.subtitulo}]]</p>
+
+    <div class="row py-4 mb-2 bg-light" th:if="${session.rol == 'EMPLEADO'}">
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-3">
+            <button type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#solicitudModal">
+                <i class="fa-solid fa-plus"></i>
+                [[#{solicitud.agregar}]]
+            </button>
+        </div>
+    </div>
+
+    <div class="modal fade" id="solicitudModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" th:action="@{/solicitud/guardar}">
+
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title">[[#{solicitud.agregar}]]</h5>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="[[#{accion.cerrar}]]"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="solicitudTipo">
+                                [[#{solicitud.tipo}]]
+                            </label>
+                            <select id="solicitudTipo"
+                                    name="tipo"
+                                    class="form-select"
+                                    required>
+                                <option value="VACACIONES">[[#{solicitud.tipo.vacaciones}]]</option>
+                                <option value="CAMBIO_TURNO">[[#{solicitud.tipo.cambio}]]</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="solicitudFechaInicio">
+                                [[#{solicitud.fechaInicio}]]
+                            </label>
+                            <input type="date"
+                                   id="solicitudFechaInicio"
+                                   name="fechaInicio"
+                                   class="form-control"
+                                   required/>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="solicitudFechaFin">
+                                [[#{solicitud.fechaFin}]]
+                            </label>
+                            <input type="date"
+                                   id="solicitudFechaFin"
+                                   name="fechaFin"
+                                   class="form-control"
+                                   required/>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="solicitudMotivo">
+                                [[#{solicitud.motivo}]]
+                            </label>
+                            <textarea id="solicitudMotivo"
+                                      name="motivo"
+                                      class="form-control"
+                                      required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            <i class="fa-solid fa-xmark"></i>
+                            [[#{accion.cerrar}]]
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            [[#{solicitud.enviar}]]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Fragmento 2 para el listado de solicitudes -->
+<section th:fragment="listado" class="p-3">
+    <div class="row p-3">
+        <div class="col-md-9">
+            <div class="card p-2">
+                <div class="card-header">
+                    <h4>[[#{solicitud.listado}]]</h4>
+                </div>
+
+                <div class="card-body">
+                    <div th:if="${solicitudes != null and !solicitudes.empty}">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>[[#{solicitud.empleado}]]</th>
+                                    <th>[[#{solicitud.tipo}]]</th>
+                                    <th>[[#{solicitud.fechaInicio}]]</th>
+                                    <th>[[#{solicitud.fechaFin}]]</th>
+                                    <th>[[#{solicitud.motivo}]]</th>
+                                    <th>[[#{solicitud.estado}]]</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="s : ${solicitudes}">
+                                    <td>[[${s.id}]]</td>
+                                    <td>[[${s.empleado.nombre}]]</td>
+                                    <td>[[${s.tipo}]]</td>
+                                    <td>[[${s.fechaInicio}]]</td>
+                                    <td>[[${s.fechaFin}]]</td>
+                                    <td>[[${s.motivo}]]</td>
+                                    <td>[[${s.estado}]]</td>
+                                    <td>
+                                        <div th:if="${session.rol == 'ADMIN' and s.estado == 'PENDIENTE'}">
+                                            <form class="d-inline"
+                                                  method="post"
+                                                  th:action="@{/solicitud/{id}/aprobar(id=${s.id})}">
+                                                <button type="submit" class="btn btn-success">
+                                                    <i class="fa-solid fa-check"></i>
+                                                    [[#{solicitud.aprobar}]]
+                                                </button>
+                                            </form>
+                                            <form class="d-inline"
+                                                  method="post"
+                                                  th:action="@{/solicitud/{id}/rechazar(id=${s.id})}">
+                                                <button type="submit" class="btn btn-danger">
+                                                    <i class="fa-solid fa-xmark"></i>
+                                                    [[#{solicitud.rechazar}]]
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-center p-2"
+                         th:if="${solicitudes == null or solicitudes.empty}">
+                        <span>[[#{lista.vacia}]]</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center bg-success text-white mb-3">
+                <div class="card-body">
+                    <h3>[[#{solicitud.total}]]</h3>
+                    <h4 class="fs-2">
+                        <i class="fas fa-inbox"></i>
+                        [[${totalSolicitudes}]]
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

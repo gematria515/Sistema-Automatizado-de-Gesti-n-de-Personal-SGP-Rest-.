@@ -1,0 +1,258 @@
+<!-- 1 Fragmento con formulario unificado para agregar y modificar turno -->
+<section th:fragment="formulario">
+    <h2>[[#{turno.listado}]]</h2>
+    <p class="sgp-subtitle">[[#{turno.subtitulo}]]</p>
+
+    <div class="row py-4 mb-2 bg-light">
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-3">
+            <button type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#turnoModal"
+                    data-modo="agregar"
+                    th:data-titulo="#{turno.agregar}">
+                <i class="fa-solid fa-plus"></i>
+                [[#{turno.agregar}]]
+            </button>
+        </div>
+    </div>
+
+    <div class="modal fade" id="turnoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="turnoForm"
+                      method="post"
+                      th:action="@{/turno/guardar}">
+
+                    <div class="modal-header" id="turnoModalHeader">
+                        <h5 class="modal-title" id="turnoModalTitulo"></h5>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="[[#{accion.cerrar}]]"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <input type="hidden"
+                               id="turnoId"
+                               name="id"/>
+
+                        <div class="mb-3">
+                            <label for="turnoEmpleado">
+                                [[#{turno.empleado}]]
+                            </label>
+                            <select id="turnoEmpleado"
+                                    name="empleado.id"
+                                    class="form-select"
+                                    required>
+                                <option th:each="emp : ${empleados}"
+                                        th:value="${emp.id}"
+                                        th:text="${emp.nombre}"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="turnoFecha">
+                                [[#{turno.fecha}]]
+                            </label>
+                            <input type="date"
+                                   id="turnoFecha"
+                                   name="fecha"
+                                   class="form-control"
+                                   required/>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="turnoHoraInicio">
+                                [[#{turno.horaInicio}]]
+                            </label>
+                            <input type="time"
+                                   id="turnoHoraInicio"
+                                   name="horaInicio"
+                                   class="form-control"
+                                   required/>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="turnoHoraFin">
+                                [[#{turno.horaFin}]]
+                            </label>
+                            <input type="time"
+                                   id="turnoHoraFin"
+                                   name="horaFin"
+                                   class="form-control"
+                                   required/>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="turnoArea">
+                                [[#{turno.area}]]
+                            </label>
+                            <input type="text"
+                                   id="turnoArea"
+                                   name="area"
+                                   class="form-control"
+                                   required/>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            <i class="fa-solid fa-xmark"></i>
+                            [[#{accion.cerrar}]]
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            [[#{accion.guardar}]]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Fragmento 2 para el listado de turnos -->
+<section th:fragment="listado" class="p-3">
+    <div class="row p-3">
+        <div class="col-md-9">
+            <div class="card p-2">
+                <div class="card-header">
+                    <h4>[[#{turno.listado}]]</h4>
+                </div>
+
+                <div class="card-body">
+                    <div th:if="${turnos != null and !turnos.empty}">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>[[#{turno.empleado}]]</th>
+                                    <th>[[#{turno.fecha}]]</th>
+                                    <th>[[#{turno.horaInicio}]]</th>
+                                    <th>[[#{turno.horaFin}]]</th>
+                                    <th>[[#{turno.area}]]</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="x : ${turnos}">
+                                    <td>[[${x.id}]]</td>
+                                    <td>[[${x.empleado != null ? x.empleado.nombre : ''}]]</td>
+                                    <td>[[${x.fecha}]]</td>
+                                    <td>[[${x.horaInicio}]]</td>
+                                    <td>[[${x.horaFin}]]</td>
+                                    <td>[[${x.area}]]</td>
+                                    <td>
+                                        <button type="button"
+                                                class="btn btn-danger"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#confirmModal"
+                                                th:data-bs-id="${x.id}"
+                                                th:data-bs-descripcion="${x.fecha + ' · ' + (x.empleado != null ? x.empleado.nombre : '')}">
+                                            <i class="fa-solid fa-trash"></i>
+                                            [[#{accion.eliminar}]]
+                                        </button>
+
+                                        <button type="button"
+                                                class="btn btn-warning"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#turnoModal"
+                                                data-modo="editar"
+                                                th:data-titulo="#{accion.actualizar}"
+                                                th:data-id="${x.id}"
+                                                th:data-empleado="${x.empleado != null ? x.empleado.id : ''}"
+                                                th:data-fecha="${x.fecha}"
+                                                th:data-horainicio="${x.horaInicio}"
+                                                th:data-horafin="${x.horaFin}"
+                                                th:data-area="${x.area}">
+                                            <i class="fas fa-pencil-alt"></i>
+                                            [[#{accion.actualizar}]]
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-center p-2"
+                         th:if="${turnos == null or turnos.empty}">
+                        <span>[[#{lista.vacia}]]</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center bg-success text-white mb-3">
+                <div class="card-body">
+                    <h3>[[#{turno.total}]]</h3>
+                    <h4 class="fs-2">
+                        <i class="fas fa-calendar-week"></i>
+                        [[${totalTurnos}]]
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Fragmento 3 para los turnos del empleado que inició sesión -->
+<section th:fragment="misTurnos" class="py-3">
+    <h2>[[#{turno.mis}]]</h2>
+    <p class="sgp-subtitle">[[#{turno.mis.subtitulo}]]</p>
+
+    <div class="row">
+        <div class="col-md-9">
+            <div class="card p-2">
+                <div class="card-header">
+                    <h4>[[#{turno.mis}]]</h4>
+                </div>
+
+                <div class="card-body">
+                    <div th:if="${turnos != null and !turnos.empty}">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>[[#{turno.fecha}]]</th>
+                                    <th>[[#{turno.horaInicio}]]</th>
+                                    <th>[[#{turno.horaFin}]]</th>
+                                    <th>[[#{turno.area}]]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="x : ${turnos}">
+                                    <td>[[${x.fecha}]]</td>
+                                    <td>[[${x.horaInicio}]]</td>
+                                    <td>[[${x.horaFin}]]</td>
+                                    <td>[[${x.area}]]</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-center p-2"
+                         th:if="${turnos == null or turnos.empty}">
+                        <span>[[#{lista.vacia}]]</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center bg-success text-white mb-3">
+                <div class="card-body">
+                    <h3>[[#{turno.total}]]</h3>
+                    <h4 class="fs-2">
+                        <i class="fas fa-calendar-days"></i>
+                        [[${totalTurnos}]]
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
