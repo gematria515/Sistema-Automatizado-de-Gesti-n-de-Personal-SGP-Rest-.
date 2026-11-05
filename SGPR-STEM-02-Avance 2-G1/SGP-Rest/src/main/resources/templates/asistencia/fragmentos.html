@@ -1,0 +1,91 @@
+<!-- 1 Fragmento con los botones para registrar las marcas del día -->
+<section th:fragment="formulario">
+    <h2>[[#{asistencia.titulo}]]</h2>
+    <p class="sgp-subtitle">[[#{asistencia.subtitulo}]]</p>
+
+    <div class="row py-4 mb-2 bg-light">
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-9 d-flex gap-2 flex-wrap">
+            <form th:action="@{/asistencia/entrada}" method="post">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    [[#{asistencia.entrada}]]
+                </button>
+            </form>
+            <form th:action="@{/asistencia/descanso}" method="post">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-mug-hot"></i>
+                    [[#{asistencia.descanso}]]
+                </button>
+            </form>
+            <form th:action="@{/asistencia/regreso}" method="post">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-play"></i>
+                    [[#{asistencia.regreso}]]
+                </button>
+            </form>
+            <form th:action="@{/asistencia/salida}" method="post">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    [[#{asistencia.salida}]]
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Fragmento 2 para el listado de marcas -->
+<section th:fragment="listado" class="p-3">
+    <div class="row p-3">
+        <div class="col-md-9">
+            <div class="card p-2">
+                <div class="card-header">
+                    <h4>[[#{asistencia.listado}]]</h4>
+                </div>
+
+                <div class="card-body">
+                    <div th:if="${asistencias != null and !asistencias.empty}">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>[[#{asistencia.entradaHora}]]</th>
+                                    <th>[[#{asistencia.salidaHora}]]</th>
+                                    <th>[[#{asistencia.tardia}]]</th>
+                                    <th>[[#{asistencia.minutosDescanso}]]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="a : ${asistencias}">
+                                    <td>[[${a.id}]]</td>
+                                    <td>[[${a.entrada}]]</td>
+                                    <td>[[${a.salida}]]</td>
+                                    <td th:text="${a.tardia} ? #{estado.si} : #{estado.no}"></td>
+                                    <td>[[${a.minutosDescanso}]]</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-center p-2"
+                         th:if="${asistencias == null or asistencias.empty}">
+                        <span>[[#{lista.vacia}]]</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center bg-success text-white mb-3">
+                <div class="card-body">
+                    <h3>[[#{asistencia.total}]]</h3>
+                    <h4 class="fs-2">
+                        <i class="fas fa-clock"></i>
+                        [[${totalAsistencias}]]
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

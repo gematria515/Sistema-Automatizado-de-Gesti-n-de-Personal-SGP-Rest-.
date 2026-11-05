@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="~{general/fragmentos :: head}"></head>
+
+    <body class="sgp-app">
+        <header th:replace="~{general/fragmentos :: header}"></header>
+
+        <main class="sgp-content">
+            <h2>[[#{index.titulo}]]</h2>
+            <p class="sgp-subtitle">[[#{index.bienvenido}]] [[${session.usuario}]]</p>
+
+            <div class="row">
+                <div class="col-md-4" th:if="${session.rol == 'ADMIN'}">
+                    <div class="card p-2 mb-3">
+                        <div class="card-header"><h5>[[#{plantilla.empleados}]]</h5></div>
+                        <div class="card-body">
+                            <p>[[#{empleado.subtitulo}]]</p>
+                            <a class="btn btn-success" th:href="@{/empleado/listado}">[[#{accion.ir}]]</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" th:if="${session.rol == 'ADMIN'}">
+                    <div class="card p-2 mb-3">
+                        <div class="card-header"><h5>[[#{plantilla.turnos}]]</h5></div>
+                        <div class="card-body">
+                            <p>[[#{turno.subtitulo}]]</p>
+                            <a class="btn btn-success" th:href="@{/turno/listado}">[[#{accion.ir}]]</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" th:if="${session.rol == 'EMPLEADO'}">
+                    <div class="card p-2 mb-3">
+                        <div class="card-header"><h5>[[#{plantilla.asistencia}]]</h5></div>
+                        <div class="card-body">
+                            <p>[[#{asistencia.subtitulo}]]</p>
+                            <a class="btn btn-success" th:href="@{/asistencia}">[[#{accion.ir}]]</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-2 mb-3">
+                        <div class="card-header"><h5>[[#{plantilla.solicitudes}]]</h5></div>
+                        <div class="card-body">
+                            <p>[[#{solicitud.subtitulo}]]</p>
+                            <a class="btn btn-success" th:href="@{/solicitud/listado}">[[#{accion.ir}]]</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer th:replace="~{general/fragmentos :: footer}"></footer>
+
+        <section th:replace="~{general/fragmentos :: mostrarToast}"></section>
+    </body>
+</html>

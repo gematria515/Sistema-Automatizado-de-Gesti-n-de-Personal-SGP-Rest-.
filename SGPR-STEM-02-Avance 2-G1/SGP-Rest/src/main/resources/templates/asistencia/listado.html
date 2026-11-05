@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+    <head th:replace="~{general/fragmentos :: head}"></head>
+
+    <body class="sgp-app">
+        <header th:replace="~{general/fragmentos :: header}"></header>
+
+        <main class="sgp-content">
+            <section th:replace="~{asistencia/fragmentos :: formulario}"></section>
+
+            <section th:replace="~{asistencia/fragmentos :: listado}"></section>
+
+        </main>
+
+        <footer th:replace="~{general/fragmentos :: footer}"></footer>
+
+        <section th:replace="~{general/fragmentos :: mostrarToast}"></section>
+    </body>
+</html>
